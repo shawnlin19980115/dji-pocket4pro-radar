@@ -165,7 +165,7 @@
       { name: '蝦皮商城 DJI 直營', url: 'https://shopee.tw/OSMO-POCKET-4P%E9%9B%BB%E5%BD%B1%E7%B4%9A%E6%89%8B%E6%8C%81%E6%94%9D%E5%BD%B1%E6%A9%9F%E7%9B%B8%E6%A9%9F-%EF%BD%9C%E5%BB%A3%E8%A7%92%E4%B8%AD%E7%84%A6%E9%9B%99%E9%8F%A1%E9%A0%AD-i.918848222.50510170277' }
     ];
 
-    let timer = 30;
+    let timer = 60;
 
     function renderInitialList() {
       const listEl = document.getElementById('store-list');
@@ -211,7 +211,7 @@
     setInterval(() => {
       timer--;
       if (timer <= 0) {
-        timer = 30;
+        timer = 60;
         checkStock();
       }
       document.getElementById('countdown').innerText = timer;
