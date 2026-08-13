@@ -129,7 +129,7 @@
       <h1 class="title">DJI Pocket 4 Vlog套裝<br>庫存雷達</h1>
       <div class="status-bar">
         <span class="dot"></span>
-        <span id="last-check">正在初始化...</span>
+        <span id="last-check">準備檢查...</span>
       </div>
     </div>
 
@@ -149,16 +149,16 @@
     </div>
 
     <div class="store-list" id="store-list">
-      <!-- 列表動態渲染 -->
+      <!-- 初始載入畫面 -->
     </div>
 
     <div class="footer-note">
-      💡 判斷規則：四大平台出現正式購買/加入購物車按鈕視為有貨；售完或僅剩補貨通知視為缺貨。有貨時系統將同步觸發 LINE Messaging API 自動發送推播通知。
+      💡 判斷規則：四大平台（DJI官網、Yahoo、PChome、蝦皮直營）出現正式購買/加入購物車按鈕視為有貨；售完或僅剩補貨通知視為缺貨。有貨時系統將同步觸發 LINE Messaging API 自動發送推播通知。
     </div>
   </div>
 
   <script>
-    const STORES = [
+    const INITIAL_STORES = [
       { name: 'DJI 官網 (Vlog套裝)', url: 'https://store.dji.com/tw/product/osmo-pocket-4p-vlog-combo?from=site-nav&vid=241311&set_region=TW' },
       { name: 'Yahoo!購物中心', url: 'https://tw.buy.yahoo.com/gdsale/DJI-OSMO-POCKET-4P-VLOG%E5%A5%97%E8%A3%9D-%E9%9B%BB%E5%BD%B1%E7%B4%9A%E6%89%8B%E6%8C%81%E6%94%9D%E5%BD%B1%E6%A9%9F%E7%9B%B8%E6%A9%9F-%E5%BB%A3%E8%A7%92%E4%B8%AD%E7%84%A6%E9%9B%99%E9%8F%A1%E9%A0%AD-12147914.html' },
       { name: 'PChome 24h購物', url: 'https://24h.pchome.com.tw/prod/DGCF6H-A900K53VH' },
@@ -169,7 +169,7 @@
 
     function renderInitialList() {
       const listEl = document.getElementById('store-list');
-      listEl.innerHTML = STORES.map(store => `
+      listEl.innerHTML = INITIAL_STORES.map(store => `
         <div class="store-item">
           <div>
             <div class="store-name">${store.name}</div>
@@ -187,12 +187,27 @@
         
         document.getElementById('last-check').innerText = `最後檢查時間：${new Date().toLocaleTimeString()}`;
         document.getElementById('in-stock-count').innerText = data.inStockCount || 0;
+
+        if (data.stores && data.stores.length > 0) {
+          const listEl = document.getElementById('store-list');
+          listEl.innerHTML = data.stores.map(store => `
+            <div class="store-item">
+              <div>
+                <div class="store-name">${store.name}</div>
+                <a href="${store.url}" target="_blank" class="store-url">前往賣場 ↗</a>
+              </div>
+              <span class="badge ${store.inStock ? 'badge-in' : 'badge-out'}">
+                ${store.inStock ? '有現貨！' : '缺貨中'}
+              </span>
+            </div>
+          `).join('');
+        }
       } catch (err) {
         console.error('掃描失敗', err);
       }
     }
 
-    // 倒數計時器
+    // 倒數計時與自動觸發
     setInterval(() => {
       timer--;
       if (timer <= 0) {
