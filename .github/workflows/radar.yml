@@ -1,0 +1,20 @@
+name: DJI Pocket 4 Stock Radar Cron
+
+on:
+  schedule:
+    # GitHub 支援的最高頻率：每 1 分鐘觸發一次
+    - cron: '* * * * *'
+  workflow_dispatch: # 保留手動按鈕測試
+
+jobs:
+  check-stock:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Vercel Check API Every 30s
+        run: |
+          # 執行第 1 次
+          curl -s https://你的專案名稱.vercel.app/api/check
+          echo ""
+          # 等待 30 秒後執行第 2 次，雙重保障接近 30-60 秒頻率
+          sleep 30
+          curl -s https://dji-pocket4pro-radar.vercel.app/api/check
