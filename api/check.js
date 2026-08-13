@@ -96,8 +96,8 @@ module.exports = async (req, res) => {
     }
   }
 
-  // 只要有任一平台有貨，發送 LINE 提醒
-  if (availableStores.length > 0) {
+  //   // 【測試用】無論有沒有貨，都強制發送 LINE 提醒
+  if (true) {
     let msg = `🚨【DJI Pocket 4 Vlog套裝 庫存通知】🚨\n\n發現有現貨可以購買了！\n`;
     availableStores.forEach((item) => {
       msg += `\n📍 ${item.name}\n🔗 ${item.url}\n`;
