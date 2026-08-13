@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DJI Pocket 4 Vlog套裝 庫存雷達</title>
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --text-main: #f8fafc;
+      --text-sub: #94a3b8;
+      --accent-green: #22c55e;
+      --accent-red: #ef4444;
+      --border-color: #334155;
+    }
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 24px;
+      display: flex;
+      justify-content: center;
+    }
+    .container {
+      max-width: 600px;
+      width: 100%;
+    }
+    .header {
+      margin-bottom: 24px;
+    }
+    .title {
+      font-size: 28px;
+      font-weight: 700;
+      margin: 0 0 8px 0;
+      letter-spacing: -0.5px;
+    }
+    .status-bar {
+      font-size: 14px;
+      color: var(--text-sub);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--accent-green);
+      display: inline-block;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .stat-label {
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+    .store-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .store-item {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .store-name {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .store-url {
+      font-size: 12px;
+      color: var(--text-sub);
+      text-decoration: none;
+    }
+    .store-url:hover {
+      text-decoration: underline;
+    }
+    .badge {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .badge-out {
+      background-color: rgba(239, 68, 68, 0.1);
+      color: var(--accent-red);
+    }
+    .badge-in {
+      background-color: rgba(34, 197, 94, 0.1);
+      color: var(--accent-green);
+    }
+    .footer-note {
+      margin-top: 24px;
+      font-size: 12px;
+      color: var(--text-sub);
+      line-height: 1.5;
+      background-color: rgba(255, 255, 255, 0.03);
+      padding: 12px;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1 class="title">DJI Pocket 4 Vlog套裝<br>庫存雷達</h1>
+      <div class="status-bar">
+        <span class="dot"></span>
+        <span id="last-check">正在初始化...</span>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-value" id="in-stock-count" style="color: var(--accent-green);">0</div>
+        <div class="stat-label">目前有貨</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">4</div>
+        <div class="stat-label">監控商品</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" id="countdown">30</div>
+        <div class="stat-label">秒後再次掃描</div>
+      </div>
+    </div>
+
+    <div class="store-list" id="store-list">
+      <!-- 列表動態渲染 -->
+    </div>
+
+    <div class="footer-note">
+      💡 判斷規則：四大平台出現正式購買/加入購物車按鈕視為有貨；售完或僅剩補貨通知視為缺貨。有貨時系統將同步觸發 LINE Messaging API 自動發送推播通知。
+    </div>
+  </div>
+
+  <script>
+    const STORES = [
+      { name: 'DJI 官網 (Vlog套裝)', url: 'https://store.dji.com/tw/product/osmo-pocket-4p-vlog-combo?from=site-nav&vid=241311&set_region=TW' },
+      { name: 'Yahoo!購物中心', url: 'https://tw.buy.yahoo.com/gdsale/DJI-OSMO-POCKET-4P-VLOG%E5%A5%97%E8%A3%9D-%E9%9B%BB%E5%BD%B1%E7%B4%9A%E6%89%8B%E6%8C%81%E6%94%9D%E5%BD%B1%E6%A9%9F%E7%9B%B8%E6%A9%9F-%E5%BB%A3%E8%A7%92%E4%B8%AD%E7%84%A6%E9%9B%99%E9%8F%A1%E9%A0%AD-12147914.html' },
+      { name: 'PChome 24h購物', url: 'https://24h.pchome.com.tw/prod/DGCF6H-A900K53VH' },
+      { name: '蝦皮商城 DJI 直營', url: 'https://shopee.tw/OSMO-POCKET-4P%E9%9B%BB%E5%BD%B1%E7%B4%9A%E6%89%8B%E6%8C%81%E6%94%9D%E5%BD%B1%E6%A9%9F%E7%9B%B8%E6%A9%9F-%EF%BD%9C%E5%BB%A3%E8%A7%92%E4%B8%AD%E7%84%A6%E9%9B%99%E9%8F%A1%E9%A0%AD-i.918848222.50510170277' }
+    ];
+
+    let timer = 30;
+
+    function renderInitialList() {
+      const listEl = document.getElementById('store-list');
+      listEl.innerHTML = STORES.map(store => `
+        <div class="store-item">
+          <div>
+            <div class="store-name">${store.name}</div>
+            <a href="${store.url}" target="_blank" class="store-url">前往賣場 ↗</a>
+          </div>
+          <span class="badge badge-out">缺貨中</span>
+        </div>
+      `).join('');
+    }
+
+    async function checkStock() {
+      try {
+        const res = await fetch('/api/check');
+        const data = await res.json();
+        
+        document.getElementById('last-check').innerText = `最後檢查時間：${new Date().toLocaleTimeString()}`;
+        document.getElementById('in-stock-count').innerText = data.inStockCount || 0;
+      } catch (err) {
+        console.error('掃描失敗', err);
+      }
+    }
+
+    // 倒數計時器
+    setInterval(() => {
+      timer--;
+      if (timer <= 0) {
+        timer = 30;
+        checkStock();
+      }
+      document.getElementById('countdown').innerText = timer;
+    }, 1000);
+
+    renderInitialList();
+    checkStock();
+  </script>
+</body>
+</html>
