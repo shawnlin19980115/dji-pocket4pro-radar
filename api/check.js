@@ -21,9 +21,9 @@ const STORES = [
     name: '蝦皮商城 DJI 直營',
     url: 'https://shopee.tw/api/v4/item/get?itemid=50510170277&shopid=918848222',
     type: 'shopee_api' // 蝦皮改用官方公開 API 抓取庫存數字，最精準！
-  }
+  }, // 💡 修正 1：這裡補上了逗號
   {
-    name: 'momoe購物網',
+    name: 'momo購物網',
     url: 'https://www.momoshop.com.tw/product/15612111?Area=search&mdiv=403&oid=1_7&cid=index&kw=dji+pocket+4p&ecTagNos=',
     type: 'momo'
   }
@@ -46,7 +46,7 @@ async function sendLineNotification(message) {
       {
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+          Authorization: Bearer ${token}
         }
       }
     );
@@ -97,6 +97,13 @@ module.exports = async (req, res) => {
           const isOutOfStock = html.includes('暫無存貨') || html.includes('缺貨') || html.includes('out of stock');
           const hasBuyBtn = html.includes('btn-buy') || html.includes('加入購物車') || html.includes('Buy Now');
           if (!isOutOfStock && hasBuyBtn) {
+            inStock = true;
+          }
+        } else if (store.type === 'momo') {
+          // 💡 修正 2：補上 momo 的庫存判斷邏輯
+          const isSoldOut = html.includes('售完補貨中') || html.includes('商品已售完') || html.includes('補貨中');
+          const hasCartBtn = html.includes('直接購買') || html.includes('放入購物車');
+          if (!isSoldOut && hasCartBtn) {
             inStock = true;
           }
         }
