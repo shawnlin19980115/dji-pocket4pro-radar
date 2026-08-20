@@ -128,7 +128,7 @@
     <div class="header">
       <h1 class="title">DJI Pocket 4 Vlog套裝<br>庫存雷達</h1>
       <div class="status-bar">
-        <span class="dot"></span>
+        <span class="dot" id="status-dot"></span>
         <span id="last-check">準備檢查...</span>
       </div>
     </div>
@@ -182,11 +182,17 @@
     }
 
     async function checkStock() {
+      const statusEl = document.getElementById('last-check');
+      statusEl.innerText = '正在掃描庫存...';
+
       try {
         const res = await fetch('/api/check');
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
         const data = await res.json();
+        const nowStr = new Date().toLocaleTimeString('zh-TW', { hour12: false });
         
-        document.getElementById('last-check').innerText = `最後檢查時間：${new Date().toLocaleTimeString()}`;
+        statusEl.innerText = `最後檢查時間：${nowStr}`;
         document.getElementById('in-stock-count').innerText = data.inStockCount || 0;
 
         if (data.stores && data.stores.length > 0) {
@@ -205,6 +211,8 @@
         }
       } catch (err) {
         console.error('掃描失敗', err);
+        const failTime = new Date().toLocaleTimeString('zh-TW', { hour12: false });
+        statusEl.innerText = `檢查逾時 (${failTime})，等待下次重試`;
       }
     }
 
