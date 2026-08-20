@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <link rel="manifest" href="/manifest.json">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Pocket4雷達">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DJI Pocket 4 Vlog套裝 庫存雷達</title>
+
+  <!-- PWA 設定 -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Pocket4雷達">
+
   <style>
     :root {
       --bg-color: #0f172a;
@@ -66,6 +69,7 @@
       border-radius: 12px;
       padding: 16px;
       text-align: center;
+      position: relative;
     }
     .stat-value {
       font-size: 24px;
@@ -75,6 +79,20 @@
     .stat-label {
       font-size: 12px;
       color: var(--text-sub);
+    }
+    .refresh-btn {
+      margin-top: 6px;
+      background: none;
+      border: 1px solid var(--border-color);
+      color: var(--text-sub);
+      border-radius: 6px;
+      font-size: 11px;
+      padding: 2px 8px;
+      cursor: pointer;
+    }
+    .refresh-btn:hover {
+      color: var(--text-main);
+      border-color: var(--text-sub);
     }
     .store-list {
       display: flex;
@@ -148,13 +166,11 @@
       </div>
       <div class="stat-card">
         <div class="stat-value" id="countdown">60</div>
-        <div class="stat-label">秒後再次掃描</div>
+        <button class="refresh-btn" onclick="forceRefresh()">↻ 立即刷新</button>
       </div>
     </div>
 
-    <div class="store-list" id="store-list">
-      <!-- 初始載入畫面 -->
-    </div>
+    <div class="store-list" id="store-list"></div>
 
     <div class="footer-note">
       💡 判斷規則：五大平台（DJI官網、Yahoo、PChome、momo購物網、蝦皮直營）出現正式購買/加入購物車按鈕視為有貨；售完或僅剩補貨通知視為缺貨。有貨時系統將同步觸發 LINE Messaging API 自動發送推播通知。
@@ -197,7 +213,15 @@
         const nowStr = new Date().toLocaleTimeString('zh-TW', { hour12: false });
         
         statusEl.innerText = `最後檢查時間：${nowStr}`;
-        document.getElementById('in-stock-count').innerText = data.inStockCount || 0;
+        const count = data.inStockCount || 0;
+        document.getElementById('in-stock-count').innerText = count;
+
+        // 動態網頁標題
+        if (count > 0) {
+          document.title = `🚨【現貨 ${count} 家！】DJI Pocket 4 雷達`;
+        } else {
+          document.title = `DJI Pocket 4 Vlog套裝 庫存雷達`;
+        }
 
         if (data.stores && data.stores.length > 0) {
           const listEl = document.getElementById('store-list');
@@ -220,7 +244,12 @@
       }
     }
 
-    // 倒數計時與自動觸發
+    function forceRefresh() {
+      timer = 60;
+      document.getElementById('countdown').innerText = timer;
+      checkStock();
+    }
+
     setInterval(() => {
       timer--;
       if (timer <= 0) {
