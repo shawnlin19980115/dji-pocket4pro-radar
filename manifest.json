@@ -1,0 +1,15 @@
+{
+  "name": "Pocket 4 庫存雷達",
+  "short_name": "Pocket4雷達",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "icons": [
+    {
+      "src": "https://store.dji.com/favicon.ico",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    }
+  ]
+}
