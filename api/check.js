@@ -22,6 +22,11 @@ const STORES = [
     url: 'https://shopee.tw/api/v4/item/get?itemid=50510170277&shopid=918848222',
     type: 'shopee_api' // 蝦皮改用官方公開 API 抓取庫存數字，最精準！
   }
+  {
+    name: 'momoe購物網',
+    url: 'https://www.momoshop.com.tw/product/15612111?Area=search&mdiv=403&oid=1_7&cid=index&kw=dji+pocket+4p&ecTagNos=',
+    type: 'momo'
+  }
 ];
 
 // 發送 LINE 推播訊息
